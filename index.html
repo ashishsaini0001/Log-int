@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+    body { font-family: 'Segoe UI'; display:flex; justify-content:center; align-items:center; height:100vh; background:#f0f2f5; }
+    .login-card { background:#fff; padding:30px; border-radius:12px; width:100%; max-width:350px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+    .input-group { margin-bottom:15px; text-align:left; position:relative; }
+    .input-group input { width:100%; padding:10px 10px 10px 0; font-size:16px; box-sizing:border-box; }
+    .login-btn { width:100%; padding:12px; background:#007bff; color:white; border:none; border-radius:6px; font-weight:bold; cursor:pointer; }
+    .login-btn:hover { background:#0056b3; }
+    #message { margin-bottom: 10px; font-weight:bold; color:red; }
+    
+</style>
+
+</head>
+<body>
+<div class="login-card">
+    <h2>लॉगिन (Login)</h2>
+    <div id="message"></div>
+    <div class="input-group">
+        <label>फ़ोन नंबर</label>
+        <input type="text" id="phone" placeholder="अपना नंबर डालें">
+    </div>
+    <div class="input-group">
+        <label>पासवर्ड</label>
+        <input type="password" id="password" placeholder="पासवर्ड डालें">
+    </div>
+    <button class="login-btn" onclick="loginUser()">Login</button>
+</div>
+
+
+<script>
+function loginUser() {
+    const phone = document.getElementById("phone").value;
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("message");
+
+    if(!phone || !password){
+        message.textContent = "सभी फ़ील्ड भरें ❌";
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("phone", phone);
+    formData.append("password", password);
+
+    fetch("/login", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        message.style.color = data.success ? "green" : "red";
+        message.textContent = data.message;
+        if(data.success){
+            setTimeout(() => { window.location.href = "/dashboard"; }, 1000);
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
+</body>
+</html>
